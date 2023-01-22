@@ -80,3 +80,7 @@ log: ## docker log
 .PHONY: ymlfmt
 ymlfmt: ## yaml file format
 	@yamlfmt
+
+.PHONY: ymlint
+ymlint: ## yaml file lint
+	@yamlfmt -lint && actionlint
