@@ -5,6 +5,7 @@ package internal
 
 import (
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -24,7 +25,7 @@ func TestE2E(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			res, err := http.Get("http://localhost:8080")
+			res, err := http.Get(os.Getenv("E2E_ENDPOINT"))
 			if err != nil {
 				t.Errorf("http.Get() error = %v", err)
 			}
