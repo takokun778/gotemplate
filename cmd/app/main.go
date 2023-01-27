@@ -2,15 +2,19 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/takokun778/gotemplate/pkg/log"
 )
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s", r.Method, r.URL)
+		ctx := log.SetLogCtx(r.Context())
+
+		log.GetLogCtx(ctx).Info(fmt.Sprintf("[%s] %s", r.Method, r.URL))
+
 		_, _ = w.Write([]byte(Hello("Golang")))
 	})
 
@@ -18,7 +22,7 @@ func main() {
 		_, _ = w.Write([]byte("OK"))
 	})
 
-	log.Print("server run...")
+	log.Log().Info("starting server...")
 
 	const timeout = 3
 
@@ -32,10 +36,10 @@ func main() {
 		ReadHeaderTimeout: timeout * time.Second,
 	}
 
-	log.Printf("server listen on %s", server.Addr)
+	log.Log().Info(fmt.Sprintf("listening on %s", server.Addr))
 
 	if err := server.ListenAndServe(); err != nil {
-		log.Fatal(err)
+		log.Log().Fatal("failed to listen and serve", log.ErrorField(err))
 	}
 }
 
